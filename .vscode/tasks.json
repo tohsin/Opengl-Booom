@@ -12,11 +12,18 @@
 				"-Wall",
 				"-g",
 				"-I${workspaceFolder}/dependencies/include",
+				"-I${workspaceFolder}/include",
 				"-L${workspaceFolder}/dependencies/library",
 				// "${workspaceFolder}/src/SetupAndInputs/*.cpp",
 				//"${workspaceFolder}/src/triangle/*.cpp", // all cpp files
-				"${workspaceFolder}/src/rectangle/*.cpp", // all cpp files
-				"${workspaceFolder}/src/*.c", // add glad.c
+				// "${workspaceFolder}/src/rectangle/*.cpp", // all cpp files
+				// "${workspaceFolder}/src/shaders/*.cpp", // all cpp files
+				// "${workspaceFolder}/src/textures/*.cpp", // all cpp files
+				"${workspaceFolder}/src/textures_abstracted/*.cpp", // all cpp files
+				"${workspaceFolder}/src/utils/*.c",
+				"${workspaceFolder}/src/utils/*.cpp", 
+				"${workspaceFolder}/src/renderer/*.cpp", 
+				"${workspaceFolder}/dependencies/include/stb_image/stb_image.cpp", 
 				"${workspaceFolder}/dependencies/library/libglfw.3.4.dylib", 
 				"-o",
 				"${workspaceFolder}/app",// output file
