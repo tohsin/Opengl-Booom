@@ -13,5 +13,6 @@ public:
 
     void Bind() const;
     void UnBind() const;
+    inline unsigned int getCount()const {return m_Count;};
 };
 #endif

@@ -1,6 +1,20 @@
 #include <shader_s.h>
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath){
+Shader::Shader(const char* vertexPath, const char* fragmentPath)    
+    :m_VertexFilePath(vertexPath), m_FragmentFilePath(fragmentPath), m_RenderID(0)
+
+{
+
+    ShaderProgramSource source = parseShader(vertexPath, fragmentPath);
+
+    m_RenderID = createShader(source.vertexSource, source.fragmentSource);
+    // compile shaders
+
+}
+Shader::~Shader(){
+    GLCALL(glDeleteProgram(m_RenderID));
+}
+ShaderProgramSource Shader::parseShader(const char* vertexPath, const char* fragmentPath){
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile;
@@ -30,26 +44,41 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath){
          std::cout << "DEBUG::ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
 
-    ID = createShader(vertexCode, fragmentCode);
-    // compile shaders
-
+    return{vertexCode, fragmentCode};
 }
 
-void Shader::use(){
-    GLCALL(glUseProgram(ID));
+void Shader::Bind(){
+    GLCALL(glUseProgram(m_RenderID));
 }
+void Shader::UnBind(){
+    GLCALL(glUseProgram(0));
+}
+
 
 void Shader::setBool(const std::string &name, bool value) const {
-    GLCALL(glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value));
+    GLCALL(glUniform1i(glGetUniformLocation(m_RenderID, name.c_str()), (int)value));
 }
 
-void Shader::setInt(const std::string &name, int value) const
+void Shader::setInt(const std::string &name, int value)
 {
-    GLCALL(glUniform1i(glGetUniformLocation(ID, name.c_str()), value));
+    GLCALL(glUniform1f(getUniformLocation(name), value));
 }
-void Shader::setFloat(const std::string &name, float value) const
+void Shader::setFloat(const std::string &name, float value)
 {
-    GLCALL(glUniform1f(glGetUniformLocation(ID, name.c_str()), value));
+    // GLCALL(glUniform1f(glGetUniformLocation(m_RenderID, name.c_str()), value));
+    GLCALL(glUniform1f(getUniformLocation(name), value));
+}
+
+int Shader::getUniformLocation(const std::string &name){
+    if (uniformLocationCache.find(name) != uniformLocationCache.end()){
+        return uniformLocationCache[name];
+    }
+    GLCALL( int location = glGetUniformLocation(m_RenderID, name.c_str()))
+    if(location == -1){
+        std::cout<< "DEBUG: " << "Warning Uniform " << name << " doesn't exist" << std::endl; 
+    }
+    uniformLocationCache[name] = location;
+    return location;    
 }
 
 unsigned int Shader::createShader(const std::string& vertexShaderSource,  const std::string& fragmentShaderSource){

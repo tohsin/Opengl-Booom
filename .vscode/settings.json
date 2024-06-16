@@ -42,6 +42,9 @@
         "*.tcc": "cpp",
         "cinttypes": "cpp",
         "queue": "cpp",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "iostream": "cpp",
+        "span": "cpp",
+        "string_view": "cpp"
     }
 }

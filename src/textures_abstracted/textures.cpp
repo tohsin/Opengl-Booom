@@ -7,6 +7,8 @@
 #include "vertexBuffer.h"
 #include "elementBuffer.h"
 #include "vertexArray.h"
+#include "renderer.h"
+#include "texture.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -37,11 +39,8 @@ int main(void)
         return -1;
     }
 
-   
 
     Shader custom_shader("shaders/texture.vs", "shaders/texture.fs");
-
-
     float vertices[] = {
         // positions        // colors         // texture coords
         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
@@ -49,7 +48,6 @@ int main(void)
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
     };
-
     int indices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
@@ -67,35 +65,9 @@ int main(void)
 
     ElementBuffer elementBuffer(indices, 6);
 
-    // glBindBuffer(GL_ARRAY_BUFFER, 0); 
-    // glBindVertexArray(0); 
+    Texture texture("/Users/emma/dev/Opengl-Booom/resources/textures/container.jpg");
 
-    // load and create a texture 
-    // -------------------------
-    unsigned int texture;
-    GLCALL(glGenTextures(1, &texture));
-    GLCALL(glBindTexture(GL_TEXTURE_2D, texture)); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // set the texture wrapping parameters
-    GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));	// set texture wrapping to GL_REPEAT (default wrapping method)
-    GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-    // set texture filtering parameters
-    GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-    GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("/Users/emma/dev/Opengl-Booom/resources/textures/container.jpg", &width, &height, &nrChannels, 0);
-
-    if(data){
-        // generate texture and minmaps from data
-        GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
-        GLCALL(glGenerateMipmap(GL_TEXTURE_2D));
-    }else{
-        std::cout << "DEBUG: Failed to load texture" << std::endl;
-    }
-    // free the image memory
-    stbi_image_free(data);
-
-
+    Renderer renderer;
 
     while(!glfwWindowShouldClose(window)){
         // input
@@ -104,20 +76,18 @@ int main(void)
         // render
         // ------
         GLCALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-        GLCALL( glClear(GL_COLOR_BUFFER_BIT));
+        renderer.Clear();
 
         // bind Texture
-        GLCALL(glBindTexture(GL_TEXTURE_2D, texture));
-      
-        custom_shader.use();
-        vertexArray.Bind();
-        GLCALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+        texture.Bind(0);
+
+        //finally draw to screen
+        renderer.Draw(vertexArray, elementBuffer, custom_shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents(); // checks for events and update the window state and calls right functions
     }
 
-    // glDeleteBuffers(1, &EBO);
     glfwTerminate();
     return 0;
 }
