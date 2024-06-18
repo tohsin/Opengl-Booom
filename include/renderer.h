@@ -5,11 +5,13 @@
 #include "vertexArray.h"
 #include "vertexBuffer.h"
 #include "elementBuffer.h"
-#include "shader_s.h"
+#include "shader.h"
 
 class Renderer{
 public:
-    void Draw(VertexArray& vetrexAray, ElementBuffer& elementBuffer, Shader& shader)  const ;
+    void Draw(VertexArray& vertexArray, ElementBuffer& elementBuffer, Shader& shader)  const ;
+    void Draw(VertexArray& vertexArray, Shader& shader, int count)  const ;
+    void Draw(VertexArray& vertexArray, Shader& shader, int count, glm::mat4 projection, glm::mat4 view, glm::mat4 model) const;
     void Clear() const;
     void setBGColor() const;
 };

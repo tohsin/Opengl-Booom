@@ -5,7 +5,7 @@
 #include "vertexArray.h"
 #include "vertexBuffer.h"
 #include "elementBuffer.h"
-#include "shader_s.h"
+#include "shader.h"
 #include <string>
 #include <stb_image/stb_image.h>
 
@@ -17,7 +17,7 @@ private:
     int m_Width, m_Height, m_nr_Channels;
 
 public:
-    Texture(std::string file_path);
+    Texture(std::string file_path, unsigned int image_type);
     ~Texture();
     void Bind(unsigned int slot);
 };

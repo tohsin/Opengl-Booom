@@ -45,6 +45,14 @@
         "*.tpp": "cpp",
         "iostream": "cpp",
         "span": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "format": "cpp",
+        "bitset": "cpp",
+        "future": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "thread": "cpp",
+        "variant": "cpp",
+        "*.ipp": "cpp"
     }
 }
