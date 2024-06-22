@@ -25,7 +25,7 @@ private:
 public:
     static Camera* camera;
     static Mouse mouse;
-    GLFWWindow(int width, int height, const char* title);
+    GLFWWindow(int width, int height, const char* title, bool use_Mouse);
     ~GLFWWindow();
 
     bool shouldClose() const;

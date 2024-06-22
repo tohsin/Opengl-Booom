@@ -53,6 +53,9 @@
         "locale": "cpp",
         "thread": "cpp",
         "variant": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "filesystem": "cpp",
+        "__node_handle": "cpp",
+        "__locale": "cpp"
     }
 }

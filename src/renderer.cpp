@@ -18,9 +18,16 @@ void Renderer::Draw(VertexArray& vertexArray, Shader& shader, int count, glm::ma
         vertexArray.Bind();
         GLCALL(glDrawArrays(GL_TRIANGLES, 0, count););
 }
-void Renderer::Clear() const {
-            // ------
-    GLCALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-    GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)); 
-//     GLCALL( glClear(GL_COLOR_BUFFER_BIT));
+
+void Renderer::Draw(VertexArray& vertexArray, Shader& shader, int count, glm::mat4 projection, glm::mat4 model) const {
+        shader.Bind();
+        shader.setUniformMat4("projection", projection);
+        shader.setUniformMat4("model", model);
+        vertexArray.Bind();
+        GLCALL(glDrawArrays(GL_TRIANGLES, 0, count););
+}
+void Renderer::Clear(const glm::vec3& bgColor) const {
+        GLCALL(glClearColor(bgColor.r, bgColor.g, bgColor.b, 1.0));
+        GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)); 
+
 }

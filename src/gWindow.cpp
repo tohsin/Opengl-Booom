@@ -1,7 +1,7 @@
 #include "gWindow.h"
 
 
-GLFWWindow::GLFWWindow(int width, int height, const char* title)
+GLFWWindow::GLFWWindow(int width, int height, const char* title, bool use_Mouse )
     :m_DeltaTime(0.0f), m_LastFrame(0.0f)
 {
     glfwInit();
@@ -17,7 +17,8 @@ GLFWWindow::GLFWWindow(int width, int height, const char* title)
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-    glfwSetCursorPosCallback(window, mouse_callback);
+    if(use_Mouse)
+        glfwSetCursorPosCallback(window, mouse_callback);
 
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -60,19 +61,17 @@ void GLFWWindow::processInput(){
     //time and speed updates
     updateTime();
     if(camera){
-        camera->setSpeed(2.5f * m_DeltaTime);
-
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-            camera->moveForward();
+            camera->moveForward(m_DeltaTime);
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-            camera->moveBackward();
+            camera->moveBackward(m_DeltaTime);
         }
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-            camera->moveLeft();
+            camera->moveLeft(m_DeltaTime);
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-            camera->moveRight();
+            camera->moveRight(m_DeltaTime);
         }
     }
     
@@ -105,24 +104,8 @@ void GLFWWindow::mouse_callback(GLFWwindow* window, double xposIn, double yposIn
     mouse.X = xpos;
     mouse.Y = ypos;
 
-    float sensitivity = 0.1f; // change this value to your liking
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
     if(camera){
-        camera->offsetYaw(xoffset);
-        camera->offsetPitch(yoffset);
-
-        if (camera->getPitch() > 89.0f)
-            camera->setPitch(89.0f);
-        if (camera->getPitch() < -89.0f)
-            camera->setPitch(-89.0f);
-
-        glm::vec3 front;
-        front.x = cos(glm::radians(camera->getYaw())) * cos(glm::radians(camera->getPitch()));
-        front.y = sin(glm::radians(camera->getPitch()));
-        front.z = sin(glm::radians(camera->getYaw())) * cos(glm::radians(camera->getPitch()));
-        camera->setCameraFront(glm::normalize(front));
+        camera->processMouseMotion(xoffset, yoffset);
     }
 
 }

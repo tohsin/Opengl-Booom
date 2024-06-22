@@ -107,10 +107,33 @@ int main(void)
 
         // // render cube bind shaders
         cubeShader.Bind();
-        cubeShader.setUniformVec3f("lightColor", 1.0f, 1.0f, 1.0f);
-        cubeShader.setUniformVec3f("objectColor", 1.0f, 0.5f, 0.31f);
-        cubeShader.setUniformVec3f("lightPos", lightPos);
+        // varying light color
+        glm::vec3 lightColor;
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+
+        cubeShader.setUniformVec3f("light.ambient", ambientColor);
+        cubeShader.setUniformVec3f("light.diffuse", diffuseColor);
+
+
+        cubeShader.setUniformVec3f("light.position", lightPos);
+
+        // cubeShader.setUniformVec3f("light.ambient", 0.2f, 0.2f, 0.2f);
+        // cubeShader.setUniformVec3f("light.diffuse", 0.5f, 0.5f, 0.5f); // darkened
+        cubeShader.setUniformVec3f("light.specular", 1.0f, 1.0f, 1.0f);
+
         cubeShader.setUniformVec3f("viewPos", camera.getPosition());
+
+        // material setup
+        cubeShader.setUniformVec3f("material.ambient", 1.0f, 0.5f, 0.31f);
+        cubeShader.setUniformVec3f("material.diffuse", 1.0f, 0.5f, 0.31f);
+        cubeShader.setUniformVec3f("material.specular", 0.5f, 0.5f, 0.5f);
+        cubeShader.setFloat("material.shininess", 32.0f);
+
 
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f,
             100.0f);

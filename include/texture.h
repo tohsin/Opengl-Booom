@@ -17,7 +17,7 @@ private:
     int m_Width, m_Height, m_nr_Channels;
 
 public:
-    Texture(std::string file_path, unsigned int image_type);
+    Texture(std::string file_path);
     ~Texture();
     void Bind(unsigned int slot);
 };

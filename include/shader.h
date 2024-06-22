@@ -50,6 +50,9 @@ public:
     void setUniform4f(const std::string& name, float v0, float v1, float f2, float f3);
     void setUniformMat4(const std::string& name, const glm::mat4 mat);
 
+    void setUniformVec2f(const std::string& name, float f0, float f1);
+    void setUniformVec2f(const std::string& name, const glm::vec2 value);
+
     void setUniformVec3f(const std::string& name, float f0, float f1, float f2);
     void setUniformVec3f(const std::string& name, const glm::vec3 value);
 

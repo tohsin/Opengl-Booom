@@ -11,12 +11,16 @@
 				"-fansi-escape-codes",
 				"-Wall",
 				"-g",
+				//"-dynamiclib", // This is the key option to create a dynamic library
 				"-I${workspaceFolder}/dependencies/include",
 				"-I${workspaceFolder}/include",
+				"-I/usr/local/Cellar/assimp/5.4.1/include",
+				"-I${workspaceFolder}/src/projects/basic2dEngine/include",
 				"-L${workspaceFolder}/dependencies/library",
-
-				"${workspaceFolder}/src/projects/Lighting/lighting/*.cpp", // all cpp files
-
+				"-L/usr/local/Cellar/assimp/5.4.1/lib",
+				// particle physics imports
+				"${workspaceFolder}/src/projects/basic2dEngine/main.cpp",
+				"${workspaceFolder}/src/projects/basic2dEngine/src/*.cpp", // main cpp file program using
 				"${workspaceFolder}/src/utils/*.c",
 				"${workspaceFolder}/src/utils/*.cpp", 
 				"${workspaceFolder}/src/*.cpp", 
@@ -24,6 +28,7 @@
 				"${workspaceFolder}/dependencies/library/libglfw.3.4.dylib", 
 				"-o",
 				"${workspaceFolder}/app",// output file
+				// "${workspaceFolder}/lib/libGraphics.dylib", // Output dynamic library
 				"-framework",
 				"OpenGL",
 				"-framework",
@@ -34,6 +39,7 @@
 				"CoreVideo",
 				"-framework",
 				"CoreFoundation",
+				"-lassimp",
 				"-Wno-deprecated"
 			],
 			"options": {

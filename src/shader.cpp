@@ -90,7 +90,7 @@ unsigned int Shader::compileShader(unsigned int type, const std::string &source)
     GLCALL(glGetShaderiv(shader, GL_COMPILE_STATUS, &success));
     if (!success){
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        std::cout << "Debug: ERROR::SHADER::"<<
+        std::cout << "DEBUG: ERROR::SHADER::"<<
         (type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT")
          <<"::COMPILATION_FAILED\n" << infoLog << std::endl;
         glDeleteShader(shader);
@@ -126,6 +126,13 @@ void Shader::setFloat(const std::string &name, float value)
 
 void Shader::setUniformMat4(const std::string& name, glm::mat4 mat){
    GLCALL(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(mat)));
+}
+void Shader::setUniformVec2f(const std::string& name, float f0, float f1){
+    GLCALL(glUniform2f(getUniformLocation(name), f0, f1));
+}
+
+void Shader::setUniformVec2f(const std::string& name, const glm::vec2 value){
+    GLCALL(glUniform2fv(getUniformLocation(name), 1, &value[0]));
 }
 
 void Shader::setUniformVec3f(const std::string& name, float f0, float f1, float f2){
