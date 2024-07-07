@@ -15,12 +15,13 @@
 				"-I${workspaceFolder}/dependencies/include",
 				"-I${workspaceFolder}/include",
 				"-I/usr/local/Cellar/assimp/5.4.1/include",
-				"-I${workspaceFolder}/src/projects/basic2dEngine/include",
+				//"-I${workspaceFolder}/src/projects/basic2dEngine/include",
 				"-L${workspaceFolder}/dependencies/library",
 				"-L/usr/local/Cellar/assimp/5.4.1/lib",
 				// particle physics imports
-				"${workspaceFolder}/src/projects/basic2dEngine/main.cpp",
-				"${workspaceFolder}/src/projects/basic2dEngine/src/*.cpp", // main cpp file program using
+				//"${workspaceFolder}/src/projects/basic2dEngine/main.cpp",
+				//"${workspaceFolder}/src/projects/basic2dEngine/src/*.cpp", // main cpp file program using
+				"${workspaceFolder}/src/projects/ModelLoading/main.cpp",
 				"${workspaceFolder}/src/utils/*.c",
 				"${workspaceFolder}/src/utils/*.cpp", 
 				"${workspaceFolder}/src/*.cpp", 

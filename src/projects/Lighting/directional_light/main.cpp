@@ -15,12 +15,15 @@
 #include "gWindow.h"
 #include "shader.h"
 #include "camera.h"
+int screen_width = 800;
+int screen_height = 600;
+const glm::vec3 bgColor(0.2f, 0.3f, 0.3f);
 
 int main(void)
 {
-    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+    Camera camera((float)screen_width,(float)screen_height, glm::vec3(0.0f, 0.0f, 10.0f), CameraType::ORTHO,  glm::vec3(0.0f, 1.0f, 0.0f));
     GLFWWindow::camera = &camera; 
-    GLFWWindow window(800, 600, "Learning Translation");
+    GLFWWindow window(screen_width, screen_height, "Learning Translation", true);
 
     GLCALL(glEnable(GL_DEPTH_TEST);)
     Shader cubeShader("shaders/vertex.vs", "shaders/fragment.fs");
@@ -106,8 +109,8 @@ int main(void)
     layout2.push<float>(3); // position
     lightCubeVertexArray.AddBuffer(vertexBuffer, layout2, 8 * sizeof(float));
 
-    Texture lightMapTexture("/Users/emma/dev/Opengl-Booom/resources/textures/container2.png");
-    Texture specularMapTexture("/Users/emma/dev/Opengl-Booom/resources/textures/container2_specular.png");
+    Texture lightMapTexture("/Users/emma/dev/Opengl-Booom/resources/textures/container2.png", TextureType::None);
+    Texture specularMapTexture("/Users/emma/dev/Opengl-Booom/resources/textures/container2_specular.png", TextureType::None);
 
 
     cubeShader.Bind();
@@ -126,7 +129,7 @@ int main(void)
         window.processInput();
 
         // render
-        renderer.Clear();
+        renderer.Clear(bgColor);
 
         // // render cube bind shaders
         cubeShader.Bind();
@@ -163,10 +166,12 @@ int main(void)
 
         // render light cube
 
+
         model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-
+        lightingCubeShader.Bind();
+        lightingCubeShader.setUniformVec3f("light.direction", -0.2f, -1.0f, -0.3f);
         renderer.Draw(lightCubeVertexArray, lightingCubeShader, 36, projection, view, model);
 
         //finally draw to screen

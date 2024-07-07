@@ -1,15 +1,13 @@
 #include "texture.h"
 
-Texture::Texture(std::string file_path)
-    :m_FilePath(file_path), m_RenderID(0), m_Data(NULL), m_Width(0), m_Height(0), m_nr_Channels(0)
+Texture::Texture(std::string file_path, TextureType type)
+    :m_FilePath(file_path), m_RenderID(0), m_Data(NULL), m_Width(0), m_Height(0), m_nr_Channels(0), m_Type(type)
 {
     GLCALL(glGenTextures(1, &m_RenderID));
     GLCALL(glBindTexture(GL_TEXTURE_2D, m_RenderID)); 
     stbi_set_flip_vertically_on_load(true);
 
     m_Data = stbi_load(m_FilePath.c_str(), &m_Width, &m_Height, &m_nr_Channels, 0);
-
-
 
 
     // set the texture wrapping parameters
@@ -21,7 +19,7 @@ Texture::Texture(std::string file_path)
 
 
     if(m_Data){
-        GLenum format;
+        GLenum format = GL_RED;
         if (m_nr_Channels == 1)
             format = GL_RED;
         else if (m_nr_Channels == 3)
@@ -45,4 +43,25 @@ Texture::~Texture(){
 void Texture::Bind(unsigned int slot){
     GLCALL(glActiveTexture(GL_TEXTURE0 + slot));
     GLCALL(glBindTexture(GL_TEXTURE_2D, m_RenderID));
+}
+
+std::string Texture::getTypeLiteral(TextureType type) {
+    std::string name = "None"; 
+    if (type == TextureType::Diffuse) {
+        name = "texture_diffuse";
+    } else if (type == TextureType::Specular) {
+        name = "texture_specular";
+    }
+    return name;
+}
+TextureType Texture::getLiteralFromString(std::string type){
+
+    TextureType _type = TextureType::None;
+
+    if (type == "texture_diffuse") {
+        _type = TextureType::Diffuse;
+    } else if (type == "texture_specular") {
+        _type = TextureType::Specular;
+    }
+    return _type;
 }

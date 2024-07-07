@@ -15,12 +15,25 @@
 #include "gWindow.h"
 #include "shader.h"
 #include "camera.h"
+int screen_width = 800;
+int screen_height = 600;
+const glm::vec3 bgColor(0.2f, 0.3f, 0.3f);
+
+struct Lightpropeties{
+    float constant = 1.0f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;
+
+    glm::vec3 ambient = glm::vec3(0.1f, 0.1f, 0.1f);
+    glm::vec3 diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
+    glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f);
+};
 
 int main(void)
 {
-    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+    Camera camera((float)screen_width,(float)screen_height, glm::vec3(0.0f, 0.0f, 10.0f), CameraType::PROJ,  glm::vec3(0.0f, 1.0f, 0.0f));
     GLFWWindow::camera = &camera; 
-    GLFWWindow window(800, 600, "Learning Translation");
+    GLFWWindow window(screen_width, screen_height, "Learning Translation", true);
 
     GLCALL(glEnable(GL_DEPTH_TEST);)
     Shader cubeShader("shaders/vertex.vs", "shaders/fragment.fs");
@@ -70,6 +83,18 @@ int main(void)
         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
     };
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
     
     VertexArray cubeVertexArray;
     VertexBuffer vertexBuffer(vertices, sizeof(vertices));
@@ -107,48 +132,47 @@ int main(void)
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 
-
+    Lightpropeties light_properties;
     while(!window.shouldClose()){
 
         // input
         window.processInput();
 
         // render
-        renderer.Clear();
+        renderer.Clear(bgColor);
 
         // // render cube bind shaders
         cubeShader.Bind();
-
-        // set light colors
-        cubeShader.setUniformVec3f("light.ambient",  0.2f, 0.2f, 0.2f);
-        cubeShader.setUniformVec3f("light.diffuse", 0.5f, 0.5f, 0.5f);
-        cubeShader.setUniformVec3f("light.position", lightPos);
-        cubeShader.setUniformVec3f("light.specular", 1.0f, 1.0f, 1.0f);
-
+        cubeShader.setUniformVec3f("light.position", camera.getPosition());
+        cubeShader.setUniformVec3f("light.direction", camera.getFront());
+        cubeShader.setFloat("light.cutoff", glm::cos(glm::radians(12.5f))); 
         cubeShader.setUniformVec3f("viewPos", camera.getPosition());
+        // set light colors
+        cubeShader.setUniformVec3f("light.ambient",  light_properties.ambient);
+        cubeShader.setUniformVec3f("light.diffuse", light_properties.diffuse);
+        cubeShader.setUniformVec3f("light.specular", light_properties.specular);
+
+        cubeShader.setFloat("light.constant", light_properties.constant);
+        cubeShader.setFloat("light.linear", light_properties.linear);
+        cubeShader.setFloat("light.quadratic", light_properties.quadratic);
 
         // material setup
         cubeShader.setFloat("material.shininess", 32.0f);
-
-
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f,
-            100.0f);
-        glm::mat4 view = camera.getViewMatrix();
         // world transformation
         glm::mat4 model = glm::mat4(1.0f);
 
         lightMapTexture.Bind(0);
         specularMapTexture.Bind(1);
-        
-        renderer.Draw(cubeVertexArray, cubeShader, 36, projection, view, model);
-
-        // render light cube
-
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-
-        renderer.Draw(lightCubeVertexArray, lightingCubeShader, 36, projection, view, model);
+        for(unsigned int i = 0; i < 10; i++)
+        {
+            model  = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle),
+                                glm::vec3(1.0f, 0.3f, 0.5f));
+            renderer.Draw(cubeVertexArray, cubeShader, 36, camera, model);
+        }
+        // camera is light source
 
         //finally draw to screen
         window.swapBuffers();

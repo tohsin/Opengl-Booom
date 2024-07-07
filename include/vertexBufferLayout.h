@@ -45,5 +45,7 @@ template<>
 void VertexBufferLayout::push<unsigned int>(unsigned int count);
 template<>
 void VertexBufferLayout::push<unsigned char>(unsigned int count);
+template<>
+void VertexBufferLayout::push<unsigned char>(unsigned int count);
 
 #endif

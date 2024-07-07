@@ -56,6 +56,10 @@
         "*.ipp": "cpp",
         "filesystem": "cpp",
         "__node_handle": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "ranges": "cpp",
+        "typeindex": "cpp",
+        "text_encoding": "cpp",
+        "unordered_map": "cpp"
     }
 }

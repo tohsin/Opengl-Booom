@@ -14,8 +14,7 @@ Camera::Camera(
     m_Yaw(YAW),
     m_Pitch(PITCH),
     m_Sensitivity(SENSITIVITY),
-    m_MovementSpeed(SPEED),
-    m_Type(cameraType){
+    m_MovementSpeed(SPEED){
         if (cameraType == ORTHO ){  
             m_Projection = glm::ortho(0.0f, width, 0.0f , height , -1.0f, 1.0f);
         }else{

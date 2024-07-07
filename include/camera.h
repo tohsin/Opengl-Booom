@@ -16,8 +16,6 @@ class Camera{
 private:
     glm::vec3 m_Pos, m_Front, m_Up, m_WorldUp, m_Right;
     float m_Yaw, m_Pitch, m_Sensitivity, m_MovementSpeed;
-    CameraType m_Type;
-    float m_AspectRatio;
     glm::mat4 m_Projection;
 public:
     Camera( float width,
@@ -36,7 +34,7 @@ public:
     inline void setYaw(float yaw) {m_Yaw = yaw;};
 
    inline glm::vec3 getPosition()const {return m_Pos ;};
-   inline glm::vec3 getCameraFront() const {return m_Front;};
+   inline glm::vec3 getFront() const {return m_Front;};
    inline glm::vec3 getCameraUp() const  {return m_Up;};
 
    inline float getMovementSpeed() const {return m_MovementSpeed;}; 

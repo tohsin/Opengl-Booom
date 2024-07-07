@@ -5,19 +5,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-struct Vertex{
-    float position[3];
-    float id;
-};
-
-
+#include "vertex.h"
+#include <iostream>
+#include <vector>
 class VertexBuffer{
 private:
     unsigned int m_RenderID;
     bool isDynamic;
 public:
     VertexBuffer(const void* data, unsigned int size);
+    VertexBuffer(std::vector<Vertex> vertices);
     VertexBuffer(unsigned int size); // dynamic use
     ~VertexBuffer();
 
